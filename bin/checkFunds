@@ -4,7 +4,7 @@ var cheerio = require('cheerio');
 var firebase = require('firebase');
 var database = new firebase('https://kickstarter.firebaseio.com/');
 var moment = require('moment');
-var date = moment.utc().zone(+300).format('MM/DD/YYYY h:mm A');
+var date = moment().utcOffset(-300).format('MM/DD/YYYY h:mm A');
 var url = 'https://www.kickstarter.com/projects/less/less-like-chess-but-less';
 
 request(url, function (error, response, body) {

@@ -9,9 +9,6 @@ var url = 'https://www.kickstarter.com/projects/less/less-like-chess-but-less';
 
 request(url, function (error, response, body) {
   var $ = cheerio.load(body);
-  var obj = {};
-
-  obj[date] = $('[data-pledged]').data();
-
-  database.push(obj);
+  
+  database.child(date).set($('[data-pledged]').data());
 });

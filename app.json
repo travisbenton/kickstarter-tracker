@@ -1,5 +1,15 @@
 {
   "name": "kickstarter Tracker",
   "description": "Track a kickstarter project's progress",
-  "repository": "https://github.com/travisbenton/kickstarter-tracker"
+  "repository": "https://github.com/travisbenton/kickstarter-tracker",
+  "env": {
+    "firebase_url": {
+      "description": "URL to a Firebase database",
+      "value": "https://YOUR_NAME_HERE.firebaseio.com"
+    },
+    "kickstarter_url": {
+      "description": "Link to the kickstarter project you want to track.",
+      "value": "https://www.kickstarter.com/projects/PROJECT_URL"
+    }
+  },
 }

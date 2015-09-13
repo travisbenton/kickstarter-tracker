@@ -11,5 +11,5 @@
       "description": "Link to the kickstarter project you want to track.",
       "value": "https://www.kickstarter.com/projects/PROJECT_URL"
     }
-  },
+  }
 }

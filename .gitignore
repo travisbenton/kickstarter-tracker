@@ -6,4 +6,4 @@ docker-compose.yml
 .DS_Store*
 ehthumbs.db
 Icon?
-Thumbs.db
+Thumbs.db.env

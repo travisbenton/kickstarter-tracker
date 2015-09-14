@@ -1,29 +1,3 @@
-class KickstarterTracker {
-  constructor() {}
-  
-  init() {
-    this._render();
-    this._events();
-  }
-  
-  _render() {
-    var proxyURL = 'https://jsonp.afeld.me/?url=';
-    var kickstarterURL = 'https://www.kickstarter.com/projects/less/less-like-chess-but-less.json';
-    var url = proxyURL + encodeURIComponent(kickstarterURL);
-    
-    $.getJSON(url, d => {
-      var title = $(d.card).find('.project-title').text();
-      
-      $('.title').text(title);
-    });
-    
-    new Graph().init();
-  }
-  
-  _events() {}
-}
-
-
 class Graph {
   constructor() {
     this.database = new Firebase('https://kickstarter.firebaseio.com');
@@ -49,7 +23,7 @@ class Graph {
       var data = [];
       var newItems = false;
       var recentKey = 0;
-      var x, y, empty, area, graph, goal, pct, money;
+      var x, y, empty, area, graph, pct, money;
       
       function commaSeparateNumber(val){
         while (/(\d+)(\d{3})/.test(val.toString())){
@@ -87,14 +61,16 @@ class Graph {
       });
 
       for (var key in event.val()) {
-        let timestamp = event.val()[key];
+        if (event.val().hasOwnProperty(key)) {
+          let timestamp = event.val()[key];
 
-        // the keys are unix timestamps so the largest will be the 
-        // most recent
-        recentKey = key > recentKey ? key : recentKey;
+          // the keys are unix timestamps so the largest will be the 
+          // most recent
+          recentKey = key > recentKey ? key : recentKey;
 
-        // push the pledged amounts into array for graph
-        data.push(parseInt(timestamp.pledged, 10)); 
+          // push the pledged amounts into array for graph
+          data.push(parseInt(timestamp.pledged, 10)); 
+        }
       }
 
       // current completion percent - value is given in decimal form
@@ -111,14 +87,14 @@ class Graph {
 
       // start all points at 0 so graph animates in
       empty = d3.svg.area().interpolate('basis')
-        .x(function(d, i) { return x(i); })
+        .x((d, i) => { return x(i); })
         .y0(h)
-        .y1(function(d) { return h; });
+        .y1(()=> { return h; });
 
       area = d3.svg.area().interpolate('basis')
-        .x(function(d, i) { return x(i); })
+        .x((d, i) => { return x(i); })
         .y0(h)
-        .y1(function(d) { return y(d); });
+        .y1(d => { return y(d); });
 
       graph = d3.select('.graph').append('svg')
         .attr('width', w)
@@ -160,6 +136,31 @@ class Graph {
       });
     });    
   }
+}
+
+class KickstarterTracker {
+  constructor() {}
+  
+  init() {
+    this._render();
+    this._events();
+  }
+  
+  _render() {
+    var proxyURL = 'https://jsonp.afeld.me/?url=';
+    var kickstarterURL = 'https://www.kickstarter.com/projects/less/less-like-chess-but-less.json';
+    var url = proxyURL + encodeURIComponent(kickstarterURL);
+    
+    $.getJSON(url, d => {
+      var title = $(d.card).find('.project-title').text();
+      
+      $('.title').text(title);
+    });
+    
+    new Graph().init();
+  }
+  
+  _events() {}
 }
 
 new KickstarterTracker().init();

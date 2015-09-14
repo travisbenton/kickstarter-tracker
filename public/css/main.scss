@@ -1,0 +1,52 @@
+$primary-font-family: 'Roboto Slab', helvetica, sans-serif;
+$secondary-font-family: 'Lato', helvetica, sans-serif;
+
+html,
+body {
+  font-family: $primary-font-family;
+}
+
+.project-title {
+  font-size: 5vw;
+  margin: 1vw;
+  
+  .intro {
+    text-decoration: underline;
+    display: block;
+  }
+  .title {
+    display: inline-block;
+    color: black;
+    text-shadow:
+     -1px -1px 0 #fff,  
+      1px -1px 0 #fff,
+      -1px 1px 0 #fff,
+       1px 1px 0 #fff;
+  }
+}
+
+.graph {
+  font-size: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.stats {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 1vw;
+}
+
+.pct-complete,
+.money-raised {
+  font-family: $secondary-font-family;
+  font-size: 8vw;
+  font-weight: 900;
+  text-shadow:
+   -1px -1px 0 #fff,  
+    1px -1px 0 #fff,
+    -1px 1px 0 #fff,
+     1px 1px 0 #fff;
+}

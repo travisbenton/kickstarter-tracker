@@ -4,7 +4,7 @@ body {
 }
 
 .project-title {
-  font-size: 4vw;
+  font-size: 5vw;
   margin: 1vw;
 }
 .project-title .intro {
@@ -13,9 +13,8 @@ body {
 }
 .project-title .title {
   display: inline-block;
-  background: black;
-  color: white;
-  padding: 0 1vw;
+  color: black;
+  text-shadow: -1px -1px 0 #fff,   1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
 }
 
 .graph {
@@ -39,3 +38,5 @@ body {
   font-weight: 900;
   text-shadow: -1px -1px 0 #fff,   1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
 }
+
+/*# sourceMappingURL=main.css.map */

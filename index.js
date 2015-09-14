@@ -13,6 +13,6 @@ app.get('/', function(request, response) {
   response.render('index');
 });
 
-var server = app.listen(3000, function(){
+var server = app.listen(process.env.PORT || 5000, function(){
     console.log('server is running at %s', server.address().port);
 });

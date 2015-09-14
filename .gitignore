@@ -7,3 +7,4 @@ docker-compose.yml
 ehthumbs.db
 Icon?
 Thumbs.db.env
+.sass-cache

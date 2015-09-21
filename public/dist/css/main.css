@@ -1,1 +1,43 @@
-body,html{font-family:"Roboto Slab",helvetica,sans-serif}.project-title{font-size:5vw;margin:1vw}.project-title .intro{text-decoration:underline;display:block}.project-title .title{display:inline-block;color:#000;text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff}.graph{font-size:0;position:absolute;top:0;left:0}.stats{position:absolute;bottom:0;right:0;padding:1vw}.money-raised,.pct-complete{font-family:Lato,helvetica,sans-serif;font-size:8vw;font-weight:900;text-shadow:-1px -1px 0 #fff,1px -1px 0 #fff,-1px 1px 0 #fff,1px 1px 0 #fff}
+html,
+body {
+  font-family: "Roboto Slab", helvetica, sans-serif;
+}
+
+.project-title {
+  font-size: 5vw;
+  margin: 1vw;
+}
+.project-title .intro {
+  text-decoration: underline;
+  display: block;
+}
+.project-title .title {
+  display: inline-block;
+  color: black;
+  text-shadow: -1px -1px 0 #fff,   1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+}
+
+.graph {
+  font-size: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.stats {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 1vw;
+}
+
+.pct-complete,
+.money-raised {
+  text-align: right;
+  font-family: "Lato", helvetica, sans-serif;
+  font-size: 8vw;
+  font-weight: 900;
+  text-shadow: -1px -1px 0 #fff,   1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;
+}
+
+/*# sourceMappingURL=main.css.map */

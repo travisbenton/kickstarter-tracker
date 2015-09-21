@@ -1,13 +1,18 @@
 #!/usr/bin/env node
 var request = require('request');
-var cheerio = require('cheerio');
 var firebase = require('firebase');
 var moment = require('moment');
 var database = new firebase(process.env.firebase_url);
 var date = moment().unix();
+var searchEndpoint = 'https://www.kickstarter.com/projects/search.json?term=';
+var searchTerm = process.env.kickstarter_url.substr(
+  process.env.kickstarter_url.lastIndexOf('/') + 1
+);
 
-request(process.env.kickstarter_url, function (error, response, body) {
-  var $ = cheerio.load(body);
-  
-  database.child(date).set($('[data-pledged]').data());
+request(searchEndpoint + searchTerm, function(error, response) {
+  var dataJSON = JSON.parse(response.body);
+  var projectData = dataJSON.projects[0];
+
+  database.child('overview').set(projectData);
+  database.child(date).set({pledged: projectData.pledged});
 });

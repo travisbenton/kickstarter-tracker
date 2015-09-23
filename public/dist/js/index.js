@@ -4,192 +4,130 @@ var _createClass = (function () { function defineProperties(target, props) { for
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
-var Graph = (function () {
-  function Graph() {
-    _classCallCheck(this, Graph);
+var KickstarterGraph = (function () {
+  function KickstarterGraph(opts) {
+    _classCallCheck(this, KickstarterGraph);
 
-    this.database = new Firebase('https://kickstarter.firebaseio.com');
-    this.projectTitle = '';
+    this.config = opts;
+    this.database = new Firebase(opts.firebase);
+    this.data = [];
+    this.missingData = false;
+
+    this.init(opts.view);
   }
 
-  _createClass(Graph, [{
+  _createClass(KickstarterGraph, [{
     key: 'init',
-    value: function init() {
-      this._getData();
-      this._render();
-      this._events();
-    }
-  }, {
-    key: '_render',
-    value: function _render() {
-      this._buildGraph();
-    }
-  }, {
-    key: '_events',
-    value: function _events() {}
-  }, {
-    key: '_getData',
-    value: function _getData() {
+    value: function init(view) {
       var _this = this;
 
-      var proxyURL = 'https://jsonp.afeld.me/?url=';
-      var kickstarterURL = $('body').data('kickstarter');
-      var pseudoApi = 'https://www.kickstarter.com/projects/search.json?search=&term=';
-      var url = proxyURL + encodeURIComponent(kickstarterURL);
-
-      // ugh, this is terrible. get the title from the url, then search for the
-      // title to get some metadata
-      $.getJSON(url, function (d) {
-        _this.title = $(d.card).find('.project-title').text();
-
-        $('.title').text(_this.title);
-      })
-
-      // get meta data
-      .then(function () {
-        var url = proxyURL + encodeURIComponent(pseudoApi + _this.title);
-        $.getJSON(url, function (d) {
-          window.console.log(d.projects);
-          _this.metadata = d.projects[0];
-        });
+      this.database.once('value', function (event) {
+        _this.data = event.val();
+        _this[view]();
       });
     }
   }, {
-    key: '_buildGraph',
-    value: function _buildGraph() {
-      var _this2 = this;
+    key: 'accumulativeTimeSeries',
+    value: function accumulativeTimeSeries() {
+      var el = this.config.el;
+      var size = d3.select(el).node().getBoundingClientRect();
+      var m = { top: 20, right: 20, bottom: 30, left: 50 };
+      var w = size.width - m.left - m.right;
+      var h = size.height - m.top - m.bottom;
+      var tooltipDateFormat = d3.time.format('%d %b %H:%M%p');
+      var data = [];
+      var pledgedArr = [];
+      var dateArr = [];
+      var missingData = [];
+      var x, y, xAxis, yAxis, line, svg;
+      var tooltip = d3.select('body').append('div').attr('class', 'tooltip');
 
-      // grab all the points available once on load
-      this.database.limitToLast(24).once('value', function (event) {
-        var w = $(window).width();
-        var h = $(window).height();
-        var data = [];
-        var newItems = false;
-        var recentKey = 0;
-        var x, y, empty, area, graph, pct, money;
-
-        function commaSeparateNumber(val) {
-          while (/(\d+)(\d{3})/.test(val.toString())) {
-            val = val.toString().replace(/(\d+)(\d{3})/, '$1' + ',' + '$2');
-          }
-          return val;
+      function commaSeparateNumber(val) {
+        while (/(\d+)(\d{3})/.test(val.toString())) {
+          val = val.toString().replace(/(\d+)(\d{3})/, '$1' + ',' + '$2');
         }
+        return val;
+      }
 
-        // add any new points that come in after load
-        _this2.database.on('value', function (event) {
-          var newData = [];
+      for (var key in this.data) {
+        if (this.data.hasOwnProperty(key) && key !== 'overview') {
+          var date = new Date(key * 1000);
+          var pledged = parseInt(this.data[key].pledged, 10);
 
-          if (!newItems) {
-            newItems = true;
-            return;
-          }
+          data.push({ date: date, pledged: pledged });
 
-          _.each(event.val(), function (dataPiece) {
-            newData.push(parseInt(dataPiece.pledged, 10));
-          });
-
-          x = d3.scale.linear().domain([0, newData.length - 1]).range([0, w]);
-
-          y = d3.scale.linear().domain([d3.min(newData), d3.max(newData)]).range([h, 0]);
-
-          graph.selectAll('path').datum(newData).transition().duration(1000).attr('d', area);
-        });
-
-        for (var key in event.val()) {
-          if (event.val().hasOwnProperty(key)) {
-            var timestamp = event.val()[key];
-
-            // the keys are unix timestamps so the largest will be the
-            // most recent
-            recentKey = key > recentKey ? key : recentKey;
-
-            // push the pledged amounts into array for graph
-            data.push(parseInt(timestamp.pledged, 10));
-          }
+          pledgedArr.push(pledged);
+          dateArr.push(parseInt(key, 10));
         }
+      }
 
-        // current completion percent - value is given in decimal form
-        pct = parseInt(event.val()[recentKey].percentRaised * 100, 10);
-        money = event.val()[recentKey].pledged;
+      if (this.data.overview.launched_at < d3.min(dateArr)) {
+        var date = new Date(this.data.overview.launched_at * 1000);
 
-        x = d3.scale.linear().domain([0, data.length - 1]).range([0, w]);
+        missingData.push({ date: date, pledged: 0 });
+        missingData.push({ date: data[0].date, pledged: data[0].pledged });
 
-        y = d3.scale.linear().domain([d3.min(data), d3.max(data)]).range([h, 0]);
+        this.missingData = true;
+      }
 
-        // start all points at 0 so graph animates in
-        empty = d3.svg.area().interpolate('basis').x(function (d, i) {
-          return x(i);
-        }).y0(h).y1(function () {
-          return h;
-        });
+      x = d3.time.scale().range([0, w]);
 
-        area = d3.svg.area().interpolate('basis').x(function (d, i) {
-          return x(i);
-        }).y0(h).y1(function (d) {
-          return y(d);
-        });
+      y = d3.scale.linear().range([h, 0]);
 
-        graph = d3.select('.graph').append('svg').attr('width', w).attr('height', h);
+      xAxis = d3.svg.axis().scale(x).orient('bottom').ticks(d3.time.days, 2);
 
-        graph.append('path').datum(data).attr('d', empty).transition().duration(1000).attr('d', area);
+      yAxis = d3.svg.axis().scale(y).orient('left');
 
-        $('.pct-complete').each(function () {
-          var _this3 = this;
+      line = d3.svg.line().x(function (d) {
+        return x(d.date);
+      }).y(function (d) {
+        return y(d.pledged);
+      });
 
-          $(this).prop('counter', 0).animate({
-            counter: pct
-          }, {
-            duration: 1000,
-            easing: 'swing',
-            step: function step(now) {
-              $(_this3).text(parseInt(now, 10) + '%');
-            }
-          });
-        });
+      svg = d3.select(this.config.el).append('svg').attr('width', w + m.left + m.right).attr('height', h + m.top + m.bottom).append('g').attr('transform', 'translate(' + m.left + ', ' + m.top + ')');
 
-        $('.money-raised').each(function () {
-          var _this4 = this;
+      if (this.missingData) {
+        y.domain([0, d3.max(pledgedArr)]);
+        x.domain([missingData[0].date, new Date(dateArr[dateArr.length - 1] * 1000)]);
+      } else {
+        y.domain(d3.extent(data, function (d) {
+          return d.pledged;
+        }));
+        x.domain(d3.extent(data, function (d) {
+          return d.date;
+        }));
+      }
 
-          $(this).prop('counter', 0).animate({
-            counter: money
-          }, {
-            duration: 1000,
-            easing: 'swing',
-            step: function step(now) {
-              $(_this4).text('$' + commaSeparateNumber(now.toFixed(0)));
-            }
-          });
-        });
+      svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0, ' + h + ')').call(xAxis);
+
+      svg.append('g').attr('class', 'y axis').call(yAxis).append('text').attr('transform', 'rotate(-90)').attr('y', 6).attr('dy', '.71em').style('text-anchor', 'end').text('Contributed ($)');
+
+      svg.append('path').datum(data).attr('class', 'line').attr('d', line);
+
+      svg.append('path').datum(missingData).style('stroke-dasharray', '3').attr('class', 'line').attr('d', line);
+
+      svg.selectAll('dot').data(data).enter().append('circle').attr('class', 'dot').attr('r', 0).attr('cy', function (d) {
+        return y(d.pledged);
+      }).attr('cx', function (d) {
+        return x(d.date);
+      }).on('mouseover', function (d) {
+        d3.select(this).transition().duration(200).style('r', 5);
+
+        tooltip.html('\n              ' + tooltipDateFormat(d.date) + '<br/>\n              $' + commaSeparateNumber(d.pledged) + '\n            ').style('opacity', 1).style('pointer-events', 'all').style('left', x(d.date) - 75 + 'px').style('top', y(d.pledged) - 2 + 'px');
+      }).on('mouseout', function () {
+        d3.select(this).transition().duration(200).style('r', 0);
+
+        tooltip.style('opacity', 0).style('pointer-events', 'none');
       });
     }
   }]);
 
-  return Graph;
+  return KickstarterGraph;
 })();
 
-var KickstarterTracker = (function () {
-  function KickstarterTracker() {
-    _classCallCheck(this, KickstarterTracker);
-  }
-
-  _createClass(KickstarterTracker, [{
-    key: 'init',
-    value: function init() {
-      this._render();
-      this._events();
-    }
-  }, {
-    key: '_render',
-    value: function _render() {
-      new Graph().init();
-    }
-  }, {
-    key: '_events',
-    value: function _events() {}
-  }]);
-
-  return KickstarterTracker;
-})();
-
-new KickstarterTracker().init();
+new KickstarterGraph({
+  el: '.graph',
+  firebase: 'https://allison-road-tracker.firebaseio.com/',
+  view: 'accumulativeTimeSeries'
+});
 //# sourceMappingURL=index.js.map

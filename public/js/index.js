@@ -154,7 +154,7 @@ class KickstarterGraph {
         });
   }
 }
-
+window.console.log(process.env.firebase_url);
 new KickstarterGraph({
   el: '.graph',
   firebase: process.env.firebase_url,

@@ -127,7 +127,7 @@ var KickstarterGraph = (function () {
 
 new KickstarterGraph({
   el: '.graph',
-  firebase: 'https://allison-road-tracker.firebaseio.com/',
+  firebase: process.env.firebase_url,
   view: 'accumulativeTimeSeries'
 });
 //# sourceMappingURL=index.js.map

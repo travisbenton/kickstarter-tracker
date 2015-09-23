@@ -127,7 +127,7 @@ var KickstarterGraph = (function () {
 
 new KickstarterGraph({
   el: '.graph',
-  firebase: $('body').attr(['data-firebase']),
+  firebase: $('body').attr('data-firebase'),
   view: 'accumulativeTimeSeries'
 });
 //# sourceMappingURL=index.js.map

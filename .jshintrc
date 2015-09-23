@@ -20,7 +20,6 @@
     "d3": false,
     "Firebase": false,
     "$": false,
-    "_": false,
-    "process": false
+    "_": false
   }
 }

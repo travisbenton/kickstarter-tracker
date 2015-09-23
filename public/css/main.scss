@@ -1,53 +1,55 @@
-$primary-font-family: 'Roboto Slab', helvetica, sans-serif;
-$secondary-font-family: 'Lato', helvetica, sans-serif;
-
-html,
-body {
-  font-family: $primary-font-family;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-.project-title {
-  font-size: 5vw;
-  margin: 1vw;
-  
-  .intro {
-    text-decoration: underline;
-    display: block;
-  }
-  .title {
-    display: inline-block;
-    color: black;
-    text-shadow:
-     -1px -1px 0 #fff,  
-      1px -1px 0 #fff,
-      -1px 1px 0 #fff,
-       1px 1px 0 #fff;
-  }
+body {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.dot {
+  fill: steelblue;
+  stroke-width: 10px;
+  stroke: transparent;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
 }
 
 .graph {
-  font-size: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
+  width: 100vw;
+  height: 100vh;
 }
 
-.stats {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  padding: 1vw;
-}
-
-.pct-complete,
-.money-raised {
-  text-align: right;
-  font-family: $secondary-font-family;
-  font-size: 8vw;
-  font-weight: 900;
-  text-shadow:
-   -1px -1px 0 #fff,  
-    1px -1px 0 #fff,
-    -1px 1px 0 #fff,
-     1px 1px 0 #fff;
+.tooltip {   
+  position: absolute;           
+  text-align: center;                           
+  padding: 8px;             
+  color: white;
+  border-radius: 5px;
+  font: 12px sans-serif;        
+  background-color: rgba(0, 0, 0, .7);
+  &::after {
+    content: '';
+    width: 0;
+    height: 0;
+    position: absolute;
+    right: -10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-style: solid;
+    border-width: 7.5px 0 7.5px 10px;
+    border-color: transparent transparent transparent rgba(0, 0, 0, .7);
+  }
 }

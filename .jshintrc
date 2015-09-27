@@ -17,6 +17,7 @@
   "browser": true,
 
   "globals": {
+    "console": false,
     "d3": false,
     "Firebase": false,
     "$": false,

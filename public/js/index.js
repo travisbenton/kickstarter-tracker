@@ -31,7 +31,7 @@ class KickstarterGraph {
     var dateArr = [];
     var missingData = [];
     var x, y, xAxis, yAxis, line, svg;
-    var tooltip = d3.select('body')
+    var tooltip = d3.select(el)
         .append('div')   
         .attr('class', 'tooltip');
     

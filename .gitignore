@@ -1,10 +1,9 @@
 node_modules
 .env
-Dockerfile
-docker-compose.yml
 *.log
 .DS_Store*
 ehthumbs.db
 Icon?
 Thumbs.db.env
 .sass-cache
+public/build/*

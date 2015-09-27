@@ -19026,14 +19026,8 @@ var KickstarterGraph = (function () {
 
       this.database.once('value', function (event) {
         _this.data = event.val();
-        _this.layout();
         _this[view]();
       });
-    }
-  }, {
-    key: 'layout',
-    value: function layout() {
-      (0, _jquery2['default'])('.project-title').text(this.data.overview.name);
     }
   }, {
     key: 'accumulativeTimeSeries',
@@ -19049,7 +19043,7 @@ var KickstarterGraph = (function () {
       var dateArr = [];
       var missingData = [];
       var x, y, xAxis, yAxis, line, svg;
-      var tooltip = _d32['default'].select('body').append('div').attr('class', 'tooltip');
+      var tooltip = _d32['default'].select(el).append('div').attr('class', 'tooltip');
 
       function commaSeparateNumber(val) {
         while (/(\d+)(\d{3})/.test(val.toString())) {

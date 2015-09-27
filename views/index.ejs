@@ -7,7 +7,14 @@
 </head>
 <body data-kickstarter="<%= process.env.kickstarter_url %>" data-firebase="<%= process.env.firebase_url %>">
   <h1 class="project-title"><%= data.name %></h1>
+  <h2 class="description"><%= data.blurb %></h2>
   <div class="graph"></div>
+  <h3>Statistics</h3>
+  <ul class="raised">
+    <li class="backers">Backers: <%= data.backers_count %></li>
+    <li class="pledged">Currently Pledged: <%= data.currency_symbol + '' + data.pledged %></li>
+    <li class="goal">Goal: <%= data.currency_symbol + '' + data.goal %></li>
+  </ul>
   <script src="/build/js/index.js"></script>
 </body>
 </html>

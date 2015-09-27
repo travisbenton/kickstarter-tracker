@@ -1,3 +1,7 @@
+import Firebase from 'firebase';
+import d3 from 'd3';
+import $ from 'jquery';
+
 class KickstarterGraph {
   constructor(opts) {
     this.config = opts;

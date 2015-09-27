@@ -6,7 +6,7 @@
   <link rel="stylesheet" type="text/css" href="/build/css/main.css" />
 </head>
 <body data-kickstarter="<%= process.env.kickstarter_url %>" data-firebase="<%= process.env.firebase_url %>">
-  <h1 class="project-title"></h1>
+  <h1 class="project-title"><%= data.name %></h1>
   <div class="graph"></div>
   <script src="/build/js/index.js"></script>
 </body>

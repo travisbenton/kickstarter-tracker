@@ -19026,8 +19026,14 @@ var KickstarterGraph = (function () {
 
       this.database.once('value', function (event) {
         _this.data = event.val();
+        _this.layout();
         _this[view]();
       });
+    }
+  }, {
+    key: 'layout',
+    value: function layout() {
+      (0, _jquery2['default'])('.project-title').text(this.data.overview.name);
     }
   }, {
     key: 'accumulativeTimeSeries',

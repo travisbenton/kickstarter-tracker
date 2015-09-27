@@ -17,6 +17,7 @@
   "browser": true,
 
   "globals": {
-    "console": false
+    "console": false,
+    "process": false
   }
 }
